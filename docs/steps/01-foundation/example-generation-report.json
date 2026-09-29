@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "rows": 1000,
+  "suspicious_rows": 76,
+  "benign_rows": 924,
+  "first_timestamp": "2026-01-01T00:00:00+00:00",
+  "last_timestamp": "2026-01-01T16:39:00+00:00",
+  "sha256": "32dd9585ad0eaf130253af54c176d64730eb7adad7aeae07209f3a2013e8eed7",
+  "simulated": true,
+  "generator": "synthetic-v1",
+  "seed": 42,
+  "python_version": "3.12.14"
+}

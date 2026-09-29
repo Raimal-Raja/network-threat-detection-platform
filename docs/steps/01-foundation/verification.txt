@@ -1,0 +1,18 @@
+Step 1 verification — 2026-09-29
+Environment: Windows, Python 3.12.14, Python standard library only.
+
+Command: python -m unittest discover -s tests -v
+Result: 13 tests passed; unittest reported OK.
+Covered: deterministic bytes, seed changes, summaries, schema failures,
+duplicate IDs and content, timestamp normalization/order, malformed JSON,
+duplicate JSON keys, invalid UTF-8, overwrite protection, invalid counts,
+and CLI generate/validate/failure exit codes.
+
+Command: python -m threat_platform generate --output data/step-01-demo.jsonl --count 1000 --seed 42
+Result: exit 0; 1000 rows, 76 suspicious, 924 benign; simulated=true.
+Command: python -m threat_platform validate data/step-01-demo.jsonl
+Result: exit 0; counts and digest matched generation.
+SHA-256: 32dd9585ad0eaf130253af54c176d64730eb7adad7aeae07209f3a2013e8eed7
+
+No public data ingestion, model training, detection metrics, serving,
+deployment, or performance benchmarks have been run at this milestone.

@@ -1,0 +1,62 @@
+# Network threat-detection platform
+
+A step-by-step project for learning reproducible machine learning and operating a threat-detection service. All example workloads are **SIMULATED**. The project is currently at **Step 1: foundation**; it does not yet predict threats or provide a production service.
+
+## Start here
+
+Read [Step 1 — foundation, event contract, and validation](docs/steps/01-foundation/README.md). It explains the concepts, implementation, commands, failure cases, limitations, and exercises from beginner through advanced level.
+
+Requirements: Python 3.11 or newer. Step 1 has **zero third-party dependencies** and needs no network connection, API key, paid account, GPU, or Docker installation. Tests have been run with the interpreter recorded in `docs/steps/01-foundation/verification.txt`.
+
+From this directory:
+
+```powershell
+python -m unittest discover -s tests -v
+python -m threat_platform generate --output data/demo.jsonl --count 1000 --seed 42
+python -m threat_platform validate data/demo.jsonl
+```
+
+Generation refuses to overwrite an existing dataset. Use a new filename to run another experiment. If `python` is unavailable, see the Windows instructions in the Step 1 README.
+
+## Incremental delivery plan
+
+Every completed step gets a `docs/steps/NN-topic/README.md` containing: prerequisites, basic concepts, architecture, code walkthrough, reproducible commands, verified results, failure cases, advanced tradeoffs, and exercises. Planned steps are not implemented features.
+
+| Step | Scope | Completion evidence |
+|---|---|---|
+| 01 | Foundation, simulated generator, strict event validation | Deterministic bytes, validation failures, CLI and unit tests |
+| 02 | Public-data ingestion and provenance | Source terms, download/checksum manifest, source-specific schema and timezone, invalid-row report |
+| 03 | Features and chronological evaluation splits | Feature allowlist, train-only preprocessing, duplicate/group-overlap audits, temporal boundaries |
+| 04 | Baseline and stronger model | Dummy baseline, logistic regression, histogram gradient boosting; untouched test results |
+| 05 | Experiments and model versions | Local MLflow records, data/code/config hashes, artifact and schema versions |
+| 06 | FastAPI inference | Individual and batch requests, validation, health/readiness, benchmark harness |
+| 07 | Analyst workflow | Alerts, explanations, feedback, PostgreSQL persistence and dashboard |
+| 08 | Replay and monitoring | Explicit simulated clock, drift scenarios, invalid-input rate, throughput, p95 latency |
+| 09 | Deployment and rollback | Reproducible container, checks, promotion gate, rejected bad model, rollback drill |
+| 10 | Portfolio demonstration | End-to-end replay, final report, limitations, reproducibility instructions |
+
+## Budget and tools
+
+Use local execution as the default so completion never depends on promotional cloud credits. Step 1 uses only Python. Later phases will use scikit-learn, FastAPI, local PostgreSQL, local MLflow, and a simple open-source dashboard. A CPU-friendly histogram gradient-boosting model avoids a GPU requirement; XGBoost is optional if a measured comparison justifies it.
+
+Containerization and hosted CI come later. Local tests remain the authoritative free fallback. Review the applicable license and current account limits before enabling Docker Desktop or hosted CI; neither is needed for Step 1. No paid resource has been provisioned. Running on your own machine still consumes storage, electricity, and compute time.
+
+Useful free learning references:
+
+- [Python tutorial](https://docs.python.org/3/tutorial/) — language and modules.
+- [Python unittest](https://docs.python.org/3/library/unittest.html) — automated tests.
+- [CICIDS2017 official dataset page](https://www.unb.ca/cic/datasets/ids-2017.html) — candidate public research data; record terms and attribution before use. It has not been downloaded.
+- [scikit-learn user guide](https://scikit-learn.org/stable/user_guide.html) — pipelines, models, metrics.
+- [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/) — later serving layer.
+- [MLflow self-hosting](https://mlflow.org/docs/latest/self-hosting) — later local tracking.
+- [PostgreSQL tutorial](https://www.postgresql.org/docs/current/tutorial.html) — later persistence.
+
+## Evaluation commitments
+
+Accuracy alone is unsuitable for rare alerts. Step 4 will report average precision (explicitly distinguish it from trapezoidal PR-AUC), recall at a validation-selected threshold targeting a fixed false-positive rate, the achieved test false-positive rate, and false alerts per observed replay day. Select thresholds and models using validation data only; keep the final time period untouched until evaluation.
+
+False alerts per day depend on benign traffic volume and the replay clock. Report both the clock definition and denominator. Do not scale this tiny synthetic fixture into operational claims. Service benchmarks will disclose hardware, batch size, concurrency, warmup, test duration, throughput, error rate, and p95 latency. Performance metrics are **not measured yet**.
+
+## Current boundary
+
+Step 1 validates a small offline fixture. It does not establish real-world security effectiveness, solve train/test leakage, provide authentication, or collect live traffic. Public-data replay will also be described as simulated. The next milestone is Step 2, public-data ingestion with an auditable manifest.
