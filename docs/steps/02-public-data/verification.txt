@@ -1,0 +1,40 @@
+Step 2 verification — 2026-09-29
+Environment: Windows, Python 3.12.14, SQLite 3.53.1.
+Dependencies: Python standard library; no pip installs.
+
+Command: python -m unittest discover -s tests -v
+Result: 27 tests passed, including all 13 Step 1 regression tests.
+
+Tests cover: source checksum mismatch, bad headers, source date/UTC conversion,
+decimal duration precision, malformed columns, invalid selected measurements,
+uncertain-label exclusion, unsupported protocols, duplicate flows, conflicting
+labels, sorting, count accounting, deterministic runs, overwrite protection,
+artifact tampering, changed manifest counts, simulated download failures,
+download size limit, verified cache reuse, and temporary-file cleanup.
+
+Official source: CTU-13 scenario 11 bidirectional flow CSV.
+Source size: 14596615 bytes.
+Source SHA-256: cee542d4b5efe4fa1cd59b87ece5aaea9a13d8f0abe56cd07cee31590736428c
+TLS verification remained enabled; this environment used an additional public
+CA bundle retrieved from curl.se for the source host's certificate chain.
+
+Command: python -m threat_platform download-ctu13 --output data/raw/ctu13-downloader-verified.binetflow --ca-file <trusted-CA-bundle.pem>
+Result: fresh network download passed pinned size/hash checks, cached=false.
+The default source's cached-download path was also verified, cached=true.
+
+Full-source ingestion was run into two independent output directories.
+Both runs produced identical events.jsonl, quarantine.jsonl, and manifest.json
+hashes. verify-ingestion checks passed.
+
+Source records: 107251
+Accepted: 10873 (2709 benign, 8164 suspicious)
+Excluded: 96378, all unlabelled_or_ambiguous
+Conversion-invalid selected rows: 0
+Duplicate exclusions: 0
+Accepted-input timestamp inversions: 0
+
+Events SHA-256: e3f8f97500ec8024405c1af3ac2cfeb031d07561ccced3fb64cf392f5e35f2ad
+Quarantine SHA-256: 52e220a2a7856fd3ae826ab06185650a237262906c6bf2daa5aab5d69e127fc1
+
+No model was trained; no detection, throughput, or latency claim is made.
+This short capture is an ingestion demonstration, not a validated benchmark.

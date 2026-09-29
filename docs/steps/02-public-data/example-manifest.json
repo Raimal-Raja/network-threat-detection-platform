@@ -1,0 +1,130 @@
+{
+  "accepted_input_time_inversions": 0,
+  "code_sha256": {
+    "__init__.py": "6b142fd1baedca2a31fce51ad6605c9f40ae8f78eef7e285879f433f50fc4c1c",
+    "__main__.py": "f70cadab1b54e538548dd72f2ff3cf9eefffc03cc5abb68f1a9be6ba57cbef71",
+    "events.py": "91b48beb6aea771ffb1a0531d29773d4bd2920d1c520ebdba28ba2ee3ec95a20",
+    "ingestion.py": "3a318b9a9b4557c6d873c0d091d14cd578cd13f96b45540ea55f33c3fea142da"
+  },
+  "counts": {
+    "accepted_rows": 10873,
+    "benign_rows": 2709,
+    "excluded_rows": 96378,
+    "invalid_rows": 0,
+    "source_rows": 107251,
+    "suspicious_rows": 8164
+  },
+  "dataset_id": "ctu13-scenario11",
+  "event_schema_version": 2,
+  "exclusion_reasons": {
+    "unlabelled_or_ambiguous": 96378
+  },
+  "first_timestamp": "2011-08-18T13:39:35.096399+00:00",
+  "last_timestamp": "2011-08-18T13:55:39.897621+00:00",
+  "limitations": [
+    "One short capture, not a representative benchmark.",
+    "Labels and host identifiers must not be model features.",
+    "Host hashes are pseudonyms, not guaranteed anonymization.",
+    "No training, leakage-free split, or detection metrics yet."
+  ],
+  "manifest_version": 1,
+  "outputs": {
+    "events.jsonl": {
+      "bytes": 6532523,
+      "sha256": "e3f8f97500ec8024405c1af3ac2cfeb031d07561ccced3fb64cf392f5e35f2ad"
+    },
+    "quarantine.jsonl": {
+      "bytes": 5776797,
+      "sha256": "52e220a2a7856fd3ae826ab06185650a237262906c6bf2daa5aab5d69e127fc1"
+    }
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1"
+  },
+  "source": {
+    "attribution": "Garcia, Sebastian. Malware Capture Facility Project. Stratosphere Laboratory, Czech Technical University. https://www.stratosphereips.org/datasets-ctu13",
+    "bytes": 14596615,
+    "checksum_origin": "project-observed pin, not publisher-signed",
+    "description_url": "https://www.stratosphereips.org/datasets-ctu13",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "scenario_readme_url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-52/README.md",
+    "sha256": "cee542d4b5efe4fa1cd59b87ece5aaea9a13d8f0abe56cd07cee31590736428c",
+    "url": "https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-52/detailed-bidirectional-flow-labels/capture20110818-2.binetflow"
+  },
+  "source_label_counts": {
+    "flow=Background": 3230,
+    "flow=Background-Attempt-cmpgw-CVUT": 3378,
+    "flow=Background-Established-cmpgw-CVUT": 6981,
+    "flow=Background-TCP-Attempt": 1244,
+    "flow=Background-TCP-Established": 9363,
+    "flow=Background-UDP-Attempt": 1951,
+    "flow=Background-UDP-Established": 37342,
+    "flow=Background-UDP-NTP-Established-1": 287,
+    "flow=Background-ajax.google": 14,
+    "flow=Background-google-analytics1": 40,
+    "flow=Background-google-analytics10": 103,
+    "flow=Background-google-analytics11": 38,
+    "flow=Background-google-analytics12": 70,
+    "flow=Background-google-analytics13": 134,
+    "flow=Background-google-analytics14": 48,
+    "flow=Background-google-analytics15": 69,
+    "flow=Background-google-analytics16": 53,
+    "flow=Background-google-analytics2": 54,
+    "flow=Background-google-analytics3": 76,
+    "flow=Background-google-analytics4": 41,
+    "flow=Background-google-analytics5": 47,
+    "flow=Background-google-analytics6": 54,
+    "flow=Background-google-analytics7": 74,
+    "flow=Background-google-analytics8": 95,
+    "flow=Background-google-analytics9": 43,
+    "flow=Background-google-pop": 13,
+    "flow=Background-google-webmail": 26,
+    "flow=Background-www.fel.cvut.cz": 2,
+    "flow=From-Background-CVUT-Proxy": 48,
+    "flow=From-Botnet-V52-1-ICMP": 4144,
+    "flow=From-Botnet-V52-1-TCP-Established": 1,
+    "flow=From-Botnet-V52-1-TCP-HTTP-Google-Net-Established-6": 1,
+    "flow=From-Botnet-V52-1-UDP-Attempt": 1,
+    "flow=From-Botnet-V52-1-UDP-DNS": 4,
+    "flow=From-Botnet-V52-2-ICMP": 3999,
+    "flow=From-Botnet-V52-2-TCP-CC106-IRC-Not-Encrypted": 1,
+    "flow=From-Botnet-V52-2-TCP-HTTP-Google-Net-Established-6": 1,
+    "flow=From-Botnet-V52-2-UDP-Attempt": 1,
+    "flow=From-Botnet-V52-2-UDP-DNS": 4,
+    "flow=From-Botnet-V52-3-TCP-CC106-IRC-Not-Encrypted": 1,
+    "flow=From-Botnet-V52-3-TCP-HTTP-Google-Net-Established-6": 1,
+    "flow=From-Botnet-V52-3-UDP-Attempt": 1,
+    "flow=From-Botnet-V52-3-UDP-DNS": 4,
+    "flow=From-Normal-V52-CVUT-WebServer": 1,
+    "flow=From-Normal-V52-Grill": 2113,
+    "flow=From-Normal-V52-Jist": 11,
+    "flow=From-Normal-V52-MatLab-Server": 2,
+    "flow=From-Normal-V52-Stribrek": 581,
+    "flow=From-Normal-V52-UDP-CVUT-DNS-Server": 1,
+    "flow=Normal-V52-HTTP-windowsupdate": 1,
+    "flow=To-Background-CVUT-Proxy": 661,
+    "flow=To-Background-CVUT-WebServer": 162,
+    "flow=To-Background-Grill": 9,
+    "flow=To-Background-Jist": 4,
+    "flow=To-Background-MatLab-Server": 41,
+    "flow=To-Background-Stribrek": 6,
+    "flow=To-Background-UDP-CVUT-DNS-Server": 30568,
+    "flow=To-Normal-V52-UDP-NTP-server": 8
+  },
+  "transform": {
+    "adapter": "ctu13-scenario11-v1",
+    "duration_unit": "integer microseconds",
+    "negative_label": "flow=From-Normal-*",
+    "other_labels": "excluded, never assumed benign",
+    "output_timezone": "UTC",
+    "positive_label": "flow=From-Botnet-*",
+    "simulated": true,
+    "sort": [
+      "timestamp",
+      "event_id"
+    ],
+    "source_timezone": "CEST UTC+02:00",
+    "timezone_basis": "scenario README timeline; fixed to 2011-08-18"
+  }
+}
