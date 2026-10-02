@@ -1,73 +1,63 @@
 # Network threat-detection platform
 
-A step-by-step project for learning reproducible machine learning and operating a threat-detection service. All replay workloads are **SIMULATED**. **Steps 1 and 2 are complete**: synthetic fixtures and reproducible public-data ingestion. The project does not yet predict threats or provide a production service.
+An incremental project using free resources to ingest public network flows, train models and build a future analyst workflow. All replay workloads are **SIMULATED**. Steps 1–4 are complete. FastAPI, the dashboard and production deployment are later milestones.
 
-## Start here
+## Learning guides
 
-Start with [Step 1 — foundation, event contract, and validation](docs/steps/01-foundation/README.md), then [Step 2 — public-data ingestion and provenance](docs/steps/02-public-data/README.md). Each guide explains concepts, implementation, commands, failure cases, limitations, and exercises from beginner through advanced level.
+Each README progresses from basics through implementation, commands, tests, failures and advanced limitations.
 
-Requirements: Python 3.11 or newer. Both completed steps have **zero third-party dependencies**. Step 2 needs internet access once to download a 14.6 MB public flow CSV. No API key, paid account, GPU, or Docker installation is required. Verification records accompany each step.
+1. [Foundation and event validation](docs/steps/01-foundation/README.md)
+2. [Public-data ingestion and provenance](docs/steps/02-public-data/README.md)
+3. [Features and chronological evaluation](docs/steps/03-features/README.md)
+4. [Training, free Colab GPU and model saving](docs/steps/04-training/README.md)
 
-From this directory:
+[Open the Colab training notebook](https://colab.research.google.com/github/Raimal-Raja/network-threat-detection-platform/blob/main/notebooks/04_training_colab.ipynb). Free GPU availability varies; CPU works too. Download the ZIP before the runtime ends. No paid API is used.
 
-```powershell
-python -m unittest discover -s tests -v
-python -m threat_platform generate --output data/demo.jsonl --count 1000 --seed 42
-python -m threat_platform validate data/demo.jsonl
-```
+Canonical local location: D:\GitHub\network-threat-detection-platform. Data and models stay in ignored data/ and artifacts/ directories. See [attribution](DATA_SOURCES.md).
 
-Generation refuses to overwrite an existing dataset. Use a new filename to run another experiment. If `python` is unavailable, see the Windows instructions in the Step 1 README.
+## Local setup
 
-For public data:
+Python 3.11+ is required. Steps 1–2 use the standard library; training uses requirements-training.txt. From the D-drive project folder:
 
-```powershell
-python -m threat_platform download-ctu13
-python -m threat_platform ingest-ctu13
-python -m threat_platform verify-ingestion data/processed/ctu13-scenario11-v1
-```
+~~~powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-training.txt
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m threat_platform download-ctu13
+.\.venv\Scripts\python.exe -m threat_platform ingest-ctu13
+.\.venv\Scripts\python.exe -m threat_platform verify-ingestion data/processed/ctu13-scenario11-v1
+.\.venv\Scripts\python.exe -m threat_platform.training --data data/processed/ctu13-scenario11-v1 --output artifacts/local-001 --device cpu --target-fpr 0.01
+~~~
 
-The downloader checks a pinned SHA-256 before accepting a source. Raw data and processed event files stay local under ignored `data/`; source code, tests, learning guides, and a compact example manifest belong in Git. See Step 2 for TLS certificate troubleshooting, label policy, attribution, and why this short capture is not a benchmark.
+Skip ingestion if the existing run verifies; use a new training output name. Source/processed checksums are verified before fitting. Saved bundles contain features, hashes, versions, thresholds, metrics and audits, and are reloaded on CPU before publication.
 
-## Incremental delivery plan
+## Measured results
 
-Every completed step gets a `docs/steps/NN-topic/README.md` containing: prerequisites, basic concepts, architecture, code walkthrough, reproducible commands, verified results, failure cases, advanced tradeoffs, and exercises. Planned steps are not implemented features.
+The [verified T4 run](docs/steps/04-training/verification.md) passed 38 tests. Validation recommended logistic regression. An XGBoost research bundle was exported and reloaded on CPU.
 
-| Step | Scope | Completion evidence |
+| Model | Test average precision | Recall | False alerts / benign | Test FPR |
+|---|---:|---:|---:|---:|
+| Dummy | 0.824368 | 0% | 0 / 382 | 0% |
+| Logistic regression | 0.999996 | 99.944% | 6 / 382 | 1.571% |
+| XGBoost GPU | 0.999991 | 100% | 24 / 382 | 6.283% |
+
+Both learned models missed the 1% test FPR target and are **not promoted**. Average precision and trapezoidal PR-AUC are distinguished in the training report. False alerts/day, throughput and p95 service latency remain unmeasured.
+
+This short capture shares hosts across periods and excludes unknown labels, creating unusually high suspicious prevalence. Its test period was already inspected and is a development holdout. Reserve a new independent capture for final evaluation; these scores do not establish operational effectiveness.
+
+## Incremental roadmap
+
+| Step | Status | Deliverable |
 |---|---|---|
-| 01 — complete | Foundation, simulated generator, strict event validation | Deterministic bytes, validation failures, CLI and unit tests |
-| 02 — complete | Public-data ingestion and provenance | Pinned CTU-13 source, checksums, attribution, UTC conversion, exclusion accounting, verified manifest |
-| 03 | Features and chronological evaluation splits | Feature allowlist, train-only preprocessing, duplicate/group-overlap audits, temporal boundaries |
-| 04 | Baseline and stronger model | Dummy baseline, logistic regression, histogram gradient boosting; untouched test results |
-| 05 | Experiments and model versions | Local MLflow records, data/code/config hashes, artifact and schema versions |
-| 06 | FastAPI inference | Individual and batch requests, validation, health/readiness, benchmark harness |
-| 07 | Analyst workflow | Alerts, explanations, feedback, PostgreSQL persistence and dashboard |
-| 08 | Replay and monitoring | Explicit simulated clock, drift scenarios, invalid-input rate, throughput, p95 latency |
-| 09 | Deployment and rollback | Reproducible container, checks, promotion gate, rejected bad model, rollback drill |
-| 10 | Portfolio demonstration | End-to-end replay, final report, limitations, reproducibility instructions |
+| 01 | Complete | Event contract, fixtures, validation |
+| 02 | Complete | Pinned CTU-13 ingestion and provenance |
+| 03 | Complete | Six features, completion-time splits and overlap audits |
+| 04 | Complete | Baselines, GPU/CPU training and portable export |
+| 05 | Next | Local experiment tracking and model versions |
+| 06 | Planned | FastAPI individual/batch inference and benchmarks |
+| 07 | Planned | Analyst alerts, explanations, feedback and persistence |
+| 08 | Planned | Simulated replay, traffic changes and monitoring |
+| 09 | Planned | Deployment checks, promotion rejection and rollback |
+| 10 | Planned | End-to-end demonstration and independent evaluation |
 
-## Budget and tools
-
-Use local execution as the default so completion never depends on promotional cloud credits. Step 1 uses only Python. Later phases will use scikit-learn, FastAPI, local PostgreSQL, local MLflow, and a simple open-source dashboard. A CPU-friendly histogram gradient-boosting model avoids a GPU requirement; XGBoost is optional if a measured comparison justifies it.
-
-Containerization and hosted CI come later. Local tests remain the authoritative free fallback. Review the applicable license and current account limits before enabling Docker Desktop or hosted CI; neither is needed for Step 1. No paid resource has been provisioned. Running on your own machine still consumes storage, electricity, and compute time.
-
-Useful free learning references:
-
-- [Python tutorial](https://docs.python.org/3/tutorial/) — language and modules.
-- [Python unittest](https://docs.python.org/3/library/unittest.html) — automated tests.
-- [CTU-13 official dataset page](https://www.stratosphereips.org/datasets-ctu13) — selected source; see [attribution](DATA_SOURCES.md).
-- [CICIDS2017 official dataset page](https://www.unb.ca/cic/datasets/ids-2017.html) — possible later extension; not downloaded.
-- [scikit-learn user guide](https://scikit-learn.org/stable/user_guide.html) — pipelines, models, metrics.
-- [FastAPI tutorial](https://fastapi.tiangolo.com/tutorial/) — later serving layer.
-- [MLflow self-hosting](https://mlflow.org/docs/latest/self-hosting) — later local tracking.
-- [PostgreSQL tutorial](https://www.postgresql.org/docs/current/tutorial.html) — later persistence.
-
-## Evaluation commitments
-
-Accuracy alone is unsuitable for rare alerts. Step 4 will report average precision (explicitly distinguish it from trapezoidal PR-AUC), recall at a validation-selected threshold targeting a fixed false-positive rate, the achieved test false-positive rate, and false alerts per observed replay day. Select thresholds and models using validation data only; keep the final time period untouched until evaluation.
-
-False alerts per day depend on benign traffic volume and the replay clock. Report both the clock definition and denominator. Do not scale this tiny synthetic fixture into operational claims. Service benchmarks will disclose hardware, batch size, concurrency, warmup, test duration, throughput, error rate, and p95 latency. Performance metrics are **not measured yet**.
-
-## Current boundary
-
-Step 2 ingests one short public capture for simulated replay. It does not establish real-world security effectiveness, solve train/test leakage, provide authentication, or collect live traffic. Next is Step 3: feature definitions and honest chronological evaluation. Before modelling, check whether time periods contain both classes and whether shared hosts or capture artifacts would make evaluation misleading. More captures may be required; do not force a random split to hide those problems.
+Use local open-source tools as the free fallback. Later milestones can add self-hosted MLflow, FastAPI, PostgreSQL, Docker and CI without provisioning paid resources. Every completed step receives its own README and verification evidence.

@@ -151,7 +151,9 @@ def train_run(run_dir, output, device="cpu", target_fpr=.01):
                          for p in ("numpy", "scipy", "scikit-learn", "xgboost")},
             "python": platform.python_version(),
             "code_sha256": {p.name: sha256_file(p) for p in sorted(Path(__file__).parent.glob("*.py"))},
-            "model_parameters": model.get_params()})
+            "model_parameters": {key: model.get_params()[key] for key in (
+                "n_estimators", "max_depth", "learning_rate", "tree_method",
+                "objective", "eval_metric", "random_state", "n_jobs")}})
         # Reload the actual saved JSON and test every held-out row on CPU.
         restored = predict_bundle(stage, parts["test"])
         original = model.predict_proba(X["test"])[:, 1].astype(np.float64)
