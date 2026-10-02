@@ -1,6 +1,6 @@
 # Network threat-detection platform
 
-An incremental project using free resources to ingest public network flows, train models and build a future analyst workflow. All replay workloads are **SIMULATED**. Steps 1–5 are complete. FastAPI, the dashboard and production deployment are later milestones.
+An incremental project using free resources to ingest public network flows, train models and build a future analyst workflow. All replay workloads are **SIMULATED**. Steps 1–6 are complete. Local research inference is available; the analyst dashboard and production deployment are later milestones.
 
 ## Learning guides
 
@@ -11,6 +11,7 @@ Each README progresses from basics through implementation, commands, tests, fail
 3. [Features and chronological evaluation](docs/steps/03-features/README.md)
 4. [Training, free Colab GPU and model saving](docs/steps/04-training/README.md)
 5. [Local experiment tracking and model versions](docs/steps/05-tracking/README.md)
+6. [FastAPI individual/batch inference and HTTP benchmarks](docs/steps/06-serving/README.md)
 
 [Open the Colab training notebook](https://colab.research.google.com/github/Raimal-Raja/network-threat-detection-platform/blob/main/notebooks/04_training_colab.ipynb). Free GPU availability varies; CPU works too. Download the ZIP before the runtime ends. No paid API is used.
 
@@ -42,7 +43,7 @@ The [verified T4 run](docs/steps/04-training/verification.md) passed 38 tests. V
 | Logistic regression | 0.999996 | 99.944% | 6 / 382 | 1.571% |
 | XGBoost GPU | 0.999991 | 100% | 24 / 382 | 6.283% |
 
-Both learned models missed the 1% test FPR target and are **not promoted**. Average precision and trapezoidal PR-AUC are distinguished in the training report. False alerts/day, throughput and p95 service latency remain unmeasured.
+Both learned models missed the 1% test FPR target and are **not promoted**. Average precision and trapezoidal PR-AUC are distinguished in the training report. False alerts/day remain unmeasured. Step 6 adds local HTTP throughput and p95 measurement; its smoke-test results use a separate synthetic model fixture and do not represent this public-data model.
 
 This short capture shares hosts across periods and excludes unknown labels, creating unusually high suspicious prevalence. Its test period was already inspected and is a development holdout. Reserve a new independent capture for final evaluation; these scores do not establish operational effectiveness.
 
@@ -55,7 +56,7 @@ This short capture shares hosts across periods and excludes unknown labels, crea
 | 03 | Complete | Six features, completion-time splits and overlap audits |
 | 04 | Complete | Baselines, GPU/CPU training and portable export |
 | 05 | Complete | SQLite experiment ledger, verified snapshots and model versions |
-| 06 | Planned | FastAPI individual/batch inference and benchmarks |
+| 06 | Complete | Pinned-version FastAPI inference, strict validation and HTTP benchmarks |
 | 07 | Planned | Analyst alerts, explanations, feedback and persistence |
 | 08 | Planned | Simulated replay, traffic changes and monitoring |
 | 09 | Planned | Deployment checks, promotion rejection and rollback |
