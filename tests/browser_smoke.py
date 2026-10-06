@@ -42,7 +42,7 @@ try:
         page.locator("#case-title").filter(has_text="browser-demo-001").wait_for()
         assert page.locator("#contributions .contribution").count() == 6
         page.get_by_label("Reviewer alias").fill("smoke-analyst")
-        page.get_by_label("Verdict", exact=True).select_option("benign")
+        page.get_by_label("Verdict").select_option("benign")
         note = "Simulated review: verify capture evidence. <script>window.__injected=true</script>"
         page.get_by_label("Evidence and notes").fill(note)
         page.get_by_role("button", name="Save review").click()
@@ -53,7 +53,7 @@ try:
         page.reload()
         page.get_by_role("button").filter(has_text="browser-demo-001").click()
         page.locator("#history").get_by_text(note, exact=True).wait_for()
-        page.get_by_label("Review", exact=True).select_option("benign")
+        page.locator("#review-filter").select_option("benign")
         page.locator("#queue-count").filter(has_text="1 matching case").wait_for()
         page.set_viewport_size({"width": 390, "height": 844})
         page.screenshot(path=str(proof / "analyst-mobile.png"), full_page=True)
