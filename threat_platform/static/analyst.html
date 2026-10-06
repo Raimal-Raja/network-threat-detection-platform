@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Network threat investigations</title><link rel="stylesheet" href="/assets/analyst.css"><script src="/assets/analyst.js" defer></script></head>
+<body>
+<header><div class="brand"><span class="mark">N</span><div><strong>Network threat investigations</strong><small>Analyst workspace</small></div></div><span class="badge">SIMULATED · Research candidate</span></header>
+<main>
+<div class="intro"><div><p class="eyebrow">INVESTIGATE · EXPLAIN · REVIEW</p><h1>Review the evidence behind an alert.</h1><p>Inspect completed flows and record your judgment. Model scores are not proof of malicious activity.</p></div><div id="service" class="service" role="status">Checking service…</div></div>
+<div id="message" role="status" aria-live="polite"></div>
+<section class="panel submit"><div><h2>Assess a completed flow</h2><p>Save a prediction and its explanation as a case. Use synthetic or replayed public traffic.</p></div>
+<form id="assess-form">
+<label>Event ID<input id="event-id" name="event_id" required maxlength="128" pattern="[A-Za-z0-9_.:-]+" placeholder="demo-001"></label>
+<label>Duration (µs)<input id="duration" name="duration_us" type="number" min="0" max="86400000000" step="1" value="1000" required></label>
+<label>Packets<input id="packets" name="packets" type="number" min="0" max="9007199254740991" step="1" value="104" required></label>
+<label>Bytes<input id="bytes" name="bytes" type="number" min="0" max="9007199254740991" step="1" value="8200" required></label>
+<label>Protocol<select id="protocol" name="protocol"><option>TCP</option><option>UDP</option><option>ICMP</option></select></label>
+<button id="assess-button" type="submit">Assess & save</button>
+</form></section>
+<div class="workspace">
+<section class="panel queue"><div class="section-head"><div><h2>Investigation queue</h2><p id="queue-count">No cases loaded</p></div><button id="refresh" class="secondary" type="button">Refresh</button></div>
+<div class="filters"><label>Review<select id="review-filter"><option value="all">All reviews</option><option value="unreviewed">Unreviewed</option><option value="suspicious">Suspicious</option><option value="benign">Benign</option><option value="uncertain">Uncertain</option></select></label><label class="check"><input id="alert-filter" type="checkbox">Alerts only</label></div>
+<div id="queue" class="case-list" aria-label="Investigation cases"></div>
+<div class="pagination"><button id="previous" class="secondary" type="button">Previous</button><span id="page-info"></span><button id="next" class="secondary" type="button">Next</button></div>
+</section>
+<section class="panel detail"><div id="empty-detail" class="empty"><h2>Select a case to investigate</h2><p>Prediction, feature contributions and review history will appear here.</p></div>
+<div id="case-detail" hidden>
+<div class="section-head"><div><p class="eyebrow">CASE DETAIL</p><h2 id="case-title"></h2></div><button id="export" class="secondary" type="button">Export JSON</button></div>
+<div class="metrics"><div><small>Model score</small><strong id="score"></strong></div><div><small>Alert threshold</small><strong id="threshold"></strong></div><div><small>Model decision</small><strong id="decision"></strong></div></div>
+<p id="model-meta" class="muted"></p><pre id="flow-detail"></pre>
+<h3>Why did the model give this score?</h3><p class="muted">Exact TreeSHAP contributions in log-odds. Positive values push the score up; negative values push it down. These are model associations, not causal evidence.</p>
+<div id="contributions"></div><p id="explanation-summary" class="muted"></p>
+<div class="review-section"><h3>Record analyst feedback</h3><p class="muted">Your review is stored separately and does not retrain the model.</p><form id="feedback-form">
+<label>Reviewer alias<input id="reviewer" required maxlength="80" value="local-analyst"></label>
+<label>Verdict<select id="verdict"><option value="uncertain">Uncertain</option><option value="suspicious">Suspicious</option><option value="benign">Benign</option></select></label>
+<label class="wide">Evidence and notes<textarea id="note" maxlength="2000" rows="3" placeholder="What supports your judgment?"></textarea></label>
+<button type="submit" id="feedback-button">Save review</button></form></div>
+<h3>Review history</h3><div id="history"></div>
+</div></section>
+</div>
+<footer>Local research workflow · CPU inference · No production promotion · Reviews are self-reported, not independently verified labels.</footer>
+</main></body></html>

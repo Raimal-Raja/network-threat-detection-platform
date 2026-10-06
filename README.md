@@ -12,6 +12,7 @@ Each README progresses from basics through implementation, commands, tests, fail
 4. [Training, free Colab GPU and model saving](docs/steps/04-training/README.md)
 5. [Local experiment tracking and model versions](docs/steps/05-tracking/README.md)
 6. [FastAPI individual/batch inference and HTTP benchmarks](docs/steps/06-serving/README.md)
+7. [Analyst dashboard, explanations and feedback](docs/steps/07-analyst/README.md)
 
 [Open the Colab training notebook](https://colab.research.google.com/github/Raimal-Raja/network-threat-detection-platform/blob/main/notebooks/04_training_colab.ipynb). Free GPU availability varies; CPU works too. Download the ZIP before the runtime ends. No paid API is used.
 
@@ -57,7 +58,7 @@ This short capture shares hosts across periods and excludes unknown labels, crea
 | 04 | Complete | Baselines, GPU/CPU training and portable export |
 | 05 | Complete | SQLite experiment ledger, verified snapshots and model versions |
 | 06 | Complete | Pinned-version FastAPI inference, strict validation and HTTP benchmarks |
-| 07 | Planned | Analyst alerts, explanations, feedback and persistence |
+| 07 | Under verification | Local analyst dashboard, exact TreeSHAP and append-only reviews |
 | 08 | Planned | Simulated replay, traffic changes and monitoring |
 | 09 | Planned | Deployment checks, promotion rejection and rollback |
 | 10 | Planned | End-to-end demonstration and independent evaluation |
