@@ -7,6 +7,7 @@ import time
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).parent))
 from test_api import ApiTests
 from playwright.sync_api import sync_playwright
