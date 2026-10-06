@@ -1,0 +1,62 @@
+{
+  "verified_date": "2026-10-07",
+  "simulated": true,
+  "production_ready": false,
+  "dataset": "CTU-13 scenario 11 selected development holdout",
+  "events_sha256": "e3f8f97500ec8024405c1af3ac2cfeb031d07561ccced3fb64cf392f5e35f2ad",
+  "model_version": 1,
+  "bundle_sha256": "c771366e25de10a56865ff45f43fcbc53729c7aa42995c237a61e2c825531b39",
+  "hardware": "12th Gen Intel(R) Core(TM) i5-1235U",
+  "logical_cpus": 12,
+  "server_workers": 1,
+  "server_device": "cpu",
+  "python": "3.12.14",
+  "platform": "Windows x64",
+  "replay": {
+    "events": 2175,
+    "errors": 0,
+    "batch_size": 32,
+    "events_per_second": 1953.6813150450557,
+    "p95_successful_batch_latency_ms": 35.72910011280328,
+    "metrics": {
+      "average_precision": 0.9999907457220558,
+      "benign_count": 382,
+      "false_alert_count": 24,
+      "false_positive_rate": 0.06282722513089005,
+      "pr_auc_trapezoidal": 0.99999289270768,
+      "recall": 1,
+      "suspicious_count": 1793,
+      "threshold": 0.018279122188687328
+    },
+    "invalid_probe": {
+      "actual_status": 422,
+      "expected_status": 422,
+      "passed": true
+    },
+    "drift_flag": false
+  },
+  "shift": {
+    "events": 2175,
+    "multiplier": 10,
+    "drift_flag": true,
+    "detection": null
+  },
+  "individual_benchmark": {
+    "requests": 100,
+    "warmup": 10,
+    "errors": 0,
+    "events_per_second": 56.597317218071524,
+    "p95_successful_request_latency_ms": 32.27119997609407
+  },
+  "promotion": {
+    "decision": "reject_production_promotion",
+    "failed_checks": [
+      "heldout_fpr",
+      "benign_support",
+      "independent_capture_evidence",
+      "complete_day_exposure_evidence"
+    ]
+  },
+  "false_alerts_per_day": null,
+  "limitations": "Reused development capture, excluded unknown labels and overlapping hosts; timings are one local run, not a production SLA or independent operational evaluation."
+}

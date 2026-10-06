@@ -1,0 +1,23 @@
+{
+  "batch_size": 1,
+  "bundle_sha256": "c771366e25de10a56865ff45f43fcbc53729c7aa42995c237a61e2c825531b39",
+  "client_platform": "Windows-11-10.0.29639-SP0",
+  "client_python": "3.12.14",
+  "concurrency": 1,
+  "created_at_utc": "2026-10-06T19:28:46.197154+00:00",
+  "duration_seconds": 1.766868200036697,
+  "endpoint": "/predict",
+  "error_rate": 0.0,
+  "errors": 0,
+  "events_per_second": 56.597317218071524,
+  "limitations": "Sequential loopback synthetic traffic; report server hardware/workers separately. Latency excludes failures; throughput includes their elapsed time.",
+  "model_version": 1,
+  "p95_successful_request_latency_ms": 32.27119997609407,
+  "production_ready": false,
+  "requests": 100,
+  "simulated": true,
+  "successful_requests": 100,
+  "successful_requests_per_second": 56.597317218071524,
+  "url": "http://127.0.0.1:8768",
+  "warmup": 10
+}

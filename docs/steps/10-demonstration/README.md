@@ -54,6 +54,10 @@ Use a new output directory each time. The CLI refuses overwrite. It first verifi
 
 The report directory is published only after checks pass. A crash can leave a staging directory; no incomplete final report is advertised. HTTP case/review writes occur before report publication and are not rolled back if a later filesystem error occurs. Rerunning creates a new synthetic case, so avoid unnecessary reruns.
 
+## Measured local example
+
+The [recorded example](measured-example.json) used your saved Colab model on CPU and replayed all 2,175 selected CTU test events without failures. Recall was 100%, with 24/382 false positives (6.28% FPR). Individual-request p95 was 32.27ms at 56.60 requests/sec on an i5-1235U Windows laptop. The 10x traffic scenario triggered the drift heuristic. See [full aggregate reports](example-reports/README.md) and their checksums. These results retain the development-holdout limitations.
+
 ## Demonstrate failure behavior
 
 1. Compare replay and shifted distributions without assuming drift proves attack.

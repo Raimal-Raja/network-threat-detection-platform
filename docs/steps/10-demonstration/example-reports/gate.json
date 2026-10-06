@@ -1,0 +1,33 @@
+{
+  "bundle_sha256": "c771366e25de10a56865ff45f43fcbc53729c7aa42995c237a61e2c825531b39",
+  "checks": {
+    "benchmark_complete": true,
+    "benchmark_identity": true,
+    "benign_support": false,
+    "complete_day_exposure_evidence": false,
+    "heldout_fpr": false,
+    "heldout_recall": true,
+    "independent_capture_evidence": false,
+    "latency": true,
+    "metric_threshold_identity": true,
+    "suspicious_support": true,
+    "throughput": true
+  },
+  "decision": "reject_production_promotion",
+  "failed_checks": [
+    "heldout_fpr",
+    "benign_support",
+    "independent_capture_evidence",
+    "complete_day_exposure_evidence"
+  ],
+  "limitations": "Current bundle contract cannot certify independent captures or complete-day exposure. Simulation activation is separate and never overrides this rejection.",
+  "model_version": 1,
+  "policy": {
+    "max_fpr": 0.01,
+    "max_p95_ms": 100,
+    "min_events_per_second": 1,
+    "min_recall": 0.9
+  },
+  "production_ready": false,
+  "simulated": true
+}

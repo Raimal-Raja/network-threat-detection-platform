@@ -1,0 +1,17 @@
+{
+  "counts": {
+    "invalid_requests": 1,
+    "prediction_failures": 1,
+    "prediction_requests": 248,
+    "requests": 252,
+    "server_errors": 0
+  },
+  "latency_window_capacity": 1024,
+  "limitations": "ASGI request duration; includes validation/serialization, excludes client network. Resets on restart; failures excluded from latency but counted separately.",
+  "p95_successful_prediction_request_ms": 9.34910005889833,
+  "production_ready": false,
+  "scope": "this_process_since_start",
+  "simulated": true,
+  "successful_prediction_latency_samples": 247,
+  "uptime_seconds": 9.593999999924563
+}
