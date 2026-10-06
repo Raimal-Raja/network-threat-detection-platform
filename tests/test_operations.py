@@ -15,6 +15,8 @@ from threat_platform.demo import run_demo
 from threat_platform.replay import drift, evaluate, replay, local_url
 from threat_platform.deployment import activate, rollback, state, gate, selected_version
 from threat_platform.tracking import register
+from threat_platform.features import split_rows
+from threat_platform.training import predict_bundle, score_report
 
 FLOW = {"duration_us": 1000, "packets": 12, "bytes": 4096, "protocol": "TCP"}
 
@@ -104,7 +106,12 @@ class OperationsTests(unittest.TestCase):
         metadata["threshold"] = .99
         (changed/"metadata.json").write_text(json.dumps(metadata))
         metrics = json.loads((changed/"metrics.json").read_text())
-        metrics["models"]["xgboost"]["test"]["recall"] = 0
+        partitions = split_rows([json.loads(line) for line in (cls.root/"data"/"events.jsonl").read_text().splitlines()])
+        metrics["models"]["xgboost"]["threshold"] = .99
+        for name in ("validation", "test"):
+            part = partitions[name]
+            scores = [p["suspicious_score"] for p in predict_bundle(changed, part)]
+            metrics["models"]["xgboost"][name] = score_report([r["label"] for r in part], scores, .99)
         (changed/"metrics.json").write_text(json.dumps(metrics))
         cls.candidate = register(changed, cls.store)
     @classmethod
@@ -157,6 +164,7 @@ class OperationsTests(unittest.TestCase):
              "p95_successful_request_latency_ms": 5, "events_per_second": 200}
         report = gate(self.store, 2, b)
         self.assertFalse(report["checks"]["heldout_recall"])
+        self.assertTrue(report["checks"]["metric_threshold_identity"])
         self.assertEqual(report["decision"], "reject_production_promotion")
         self.assertIn("independent_capture_evidence", report["failed_checks"])
         self.assertFalse(report["production_ready"])

@@ -111,6 +111,7 @@ def gate(store, version, benchmark, max_fpr=.01, min_recall=.9, max_p95_ms=100, 
     valid_latency = type(latency) in (int, float) and math.isfinite(latency) and 0 <= latency <= max_p95_ms
     valid_throughput = type(throughput) in (int, float) and math.isfinite(throughput) and throughput >= min_events_per_second
     checks = {
+        "metric_threshold_identity": test.get("threshold") == record["report"]["metadata"]["threshold"] and report["models"]["xgboost"].get("threshold") == record["report"]["metadata"]["threshold"],
         "heldout_fpr": fpr is not None and 0 <= fpr <= max_fpr,
         "heldout_recall": recall is not None and min_recall <= recall <= 1,
         "benign_support": type(test.get("benign_count")) is int and test["benign_count"] >= 1000,
