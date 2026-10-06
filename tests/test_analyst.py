@@ -5,7 +5,7 @@ import shutil
 import unittest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
-from test_api import ApiTests
+import test_api
 from threat_platform.api import create_app
 from threat_platform.tracking import register
 
@@ -16,7 +16,7 @@ FLOW = {"duration_us": 1000, "packets": 104, "bytes": 8200, "protocol": "TCP"}
 class AnalystTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        ApiTests.setUpClass.__func__(cls)
+        test_api.ApiTests.setUpClass.__func__(cls)
 
     @classmethod
     def tearDownClass(cls):
