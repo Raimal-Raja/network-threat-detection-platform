@@ -65,16 +65,17 @@ State changes use BEGIN IMMEDIATE and append a history row. Optimistic revision 
 
 ## Docker option
 
-Install/start Docker separately if you choose this option. Keep a usable registered store under artifacts/tracking, then:
+Install/start Docker separately if you choose this option. Export a verified container-readable copy of your selected version first. The source registry remains private; the explicit export uses readable file/directory permissions and preserves version/fingerprint. Choose a new output directory if an export already exists; point Compose at that directory before updating the container.
 
 ~~~powershell
+.\.venv\Scripts\python.exe -m threat_platform.deployment export-model 1 --output artifacts/container-models
 $env:THREAT_MODEL_VERSION = "1"
 docker compose up --build -d
 docker compose ps
 docker compose logs --tail 50 analyst
 ~~~
 
-Open http://127.0.0.1:8000/analyst. Stop an existing native server first to free port 8000. Compose binds the host port to loopback, mounts model files read-only and keeps cases in a named volume. The image runs as UID 10001 with a read-only root filesystem, temporary /tmp, dropped capabilities and readiness health check.
+Open http://127.0.0.1:8000/analyst. Stop an existing native server first to free port 8000. Compose binds the host port to loopback, mounts exported model files read-only and keeps cases in a named volume. The image runs as UID 10001 with a read-only root filesystem, temporary /tmp, dropped capabilities and readiness health check.
 
 ~~~powershell
 docker compose down

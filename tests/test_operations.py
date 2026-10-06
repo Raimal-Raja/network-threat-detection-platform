@@ -13,8 +13,8 @@ from threat_platform.api import create_app
 from threat_platform.monitoring import Monitor, Telemetry
 from threat_platform.demo import run_demo
 from threat_platform.replay import drift, evaluate, replay, local_url
-from threat_platform.deployment import activate, rollback, state, gate, selected_version
-from threat_platform.tracking import register
+from threat_platform.deployment import activate, rollback, state, gate, selected_version, export_store
+from threat_platform.tracking import register, show
 from threat_platform.features import split_rows
 from threat_platform.training import predict_bundle, score_report
 
@@ -205,3 +205,15 @@ class OperationsTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "model changed"):
                 run_demo(self.root/"data", self.store, 1, "http://localhost", output)
         self.assertFalse(output.exists())
+
+    def test_container_export_preserves_identity_and_version(self):
+        output = self.root/"exported-models"
+        before = (self.store/"bundles"/self.candidate["bundle_sha256"]).stat().st_mode
+        export_store(self.store, 2, output)
+        self.assertEqual(show(output, 2), self.candidate)
+        self.assertEqual((self.store/"bundles"/self.candidate["bundle_sha256"]).stat().st_mode, before)
+        self.assertEqual((output/"bundles"/self.candidate["bundle_sha256"]).stat().st_mode & 0o444, 0o444)
+        with TestClient(create_app(output, 2)) as client:
+            self.assertEqual(client.get("/ready").json()["bundle_sha256"], self.candidate["bundle_sha256"])
+        with self.assertRaises(ValueError):
+            export_store(self.store, 2, output)

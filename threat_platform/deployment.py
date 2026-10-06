@@ -3,10 +3,13 @@ import argparse
 import json
 import math
 import sqlite3
+import os
+import shutil
+import tempfile
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from .tracking import show, read_json
+from .tracking import show, read_json, REQUIRED, connect
 
 @contextmanager
 def database(path):
@@ -131,12 +134,54 @@ def gate(store, version, benchmark, max_fpr=.01, min_recall=.9, max_p95_ms=100, 
                        "min_events_per_second": min_events_per_second},
             "limitations": "Current bundle contract cannot certify independent captures or complete-day exposure. Simulation activation is separate and never overrides this rejection."}
 
+
+def export_store(store, version, output):
+    """Create an explicit readable container copy; preserve original version/fingerprint."""
+    output = Path(output)
+    if output.exists():
+        raise ValueError("export output exists")
+    record = smoke(store, version)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix=".export-", dir=output.parent))
+    try:
+        target = stage/"bundles"/record["bundle_sha256"]
+        target.mkdir(parents=True)
+        source = Path(store)/"bundles"/record["bundle_sha256"]
+        for name in REQUIRED:
+            shutil.copyfile(source/name, target/name)
+        db = connect(stage)
+        try:
+            db.execute("INSERT INTO versions(version,bundle_sha256,created_at_utc,note,report_json) VALUES(?,?,?,?,?)",
+                       (version, record["bundle_sha256"], record["created_at_utc"], record["note"],
+                        json.dumps(record["report"], sort_keys=True, allow_nan=False)))
+            db.commit()
+        finally:
+            db.close()
+        if show(stage, version) != record:
+            raise ValueError("export verification failed")
+        # This explicitly requested export is readable by the non-root container UID.
+        # Do not modify permissions on the private source registry.
+        for path in stage.rglob("*"):
+            path.chmod(0o755 if path.is_dir() else 0o644)
+        stage.chmod(0o755)
+        if output.exists():
+            raise ValueError("export output appeared")
+        os.rename(stage, output)
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
+    return {"version": version, "bundle_sha256": record["bundle_sha256"],
+            "output": str(output), "simulated": True, "production_ready": False}
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--store", type=Path, default=Path("artifacts/tracking"))
     parser.add_argument("--state", type=Path, default=Path("artifacts/deployment/state.sqlite3"))
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("status")
+    export = commands.add_parser("export-model")
+    export.add_argument("version", type=int)
+    export.add_argument("--output", type=Path, required=True)
     add = commands.add_parser("activate")
     add.add_argument("version", type=int)
     add.add_argument("--expected-revision", type=int, required=True)
@@ -152,6 +197,8 @@ def main():
     try:
         if args.command == "status":
             result = state(args.state)
+        elif args.command == "export-model":
+            result = export_store(args.store, args.version, args.output)
         elif args.command == "activate":
             result = activate(args.state, args.store, args.version, args.expected_revision, args.simulation)
         elif args.command == "rollback":

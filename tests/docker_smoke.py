@@ -10,17 +10,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).parent))
 import test_api
+from threat_platform.deployment import export_store
 
 test_api.ApiTests.setUpClass()
 fixture = test_api.ApiTests
 name = "threat-platform-smoke"
 try:
+    exported = fixture.root/"container-models"
+    export_store(fixture.store, 1, exported)
     subprocess.run(["docker", "run", "-d", "--name", name, "--read-only",
                     "--tmpfs", "/tmp", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
                     "-p", "127.0.0.1:8767:8000",
                     "-e", "THREAT_MODEL_STORE=/models", "-e", "THREAT_MODEL_VERSION=1",
                     "-e", "THREAT_CASE_DB=/app/artifacts/analyst/cases.sqlite3",
-                    "-v", str(fixture.store)+":/models:ro",
+                    "-v", str(exported)+":/models:ro",
                     "-v", "threat-smoke-cases:/app/artifacts/analyst",
                     "threat-platform:ci"], check=True)
     for _ in range(60):
