@@ -4,3 +4,13 @@ __pycache__/
 data/
 artifacts/
 .env
+
+# User-downloaded research bundles (keep local)
+/colab-gpu-001/
+/threat-model/
+/complete-threat-bundle.zip
+/threat-model.zip
+/model.json
+/metadata.json
+/data-manifest.json
+/features.py

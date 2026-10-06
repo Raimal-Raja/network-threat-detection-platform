@@ -1,6 +1,6 @@
 # Network threat-detection platform
 
-An incremental project using free resources to ingest public network flows, train models and support analyst investigations. All replay workloads are **SIMULATED**. Steps 1–7 are complete. Local research inference and an analyst dashboard are available; monitoring and deployment controls are later milestones.
+An incremental project using free resources to ingest public network flows, train models and support analyst investigations. All replay workloads are **SIMULATED**. Steps 1–9 and the Step 10 demonstration are implemented and verified. Independent operational evaluation still requires a new untouched capture; no production approval is claimed.
 
 ## Learning guides
 
@@ -13,6 +13,9 @@ Each README progresses from basics through implementation, commands, tests, fail
 5. [Local experiment tracking and model versions](docs/steps/05-tracking/README.md)
 6. [FastAPI individual/batch inference and HTTP benchmarks](docs/steps/06-serving/README.md)
 7. [Analyst dashboard, explanations and feedback](docs/steps/07-analyst/README.md)
+8. [Simulated replay, drift and monitoring](docs/steps/08-replay/README.md)
+9. [Deployment checks, simulation activation and rollback](docs/steps/09-deployment/README.md)
+10. [End-to-end demonstration and independent evaluation protocol](docs/steps/10-demonstration/README.md)
 
 [Open the Colab training notebook](https://colab.research.google.com/github/Raimal-Raja/network-threat-detection-platform/blob/main/notebooks/04_training_colab.ipynb). Free GPU availability varies; CPU works too. Download the ZIP before the runtime ends. No paid API is used.
 
@@ -44,7 +47,7 @@ The [verified T4 run](docs/steps/04-training/verification.md) passed 38 tests. V
 | Logistic regression | 0.999996 | 99.944% | 6 / 382 | 1.571% |
 | XGBoost GPU | 0.999991 | 100% | 24 / 382 | 6.283% |
 
-Both learned models missed the 1% test FPR target and are **not promoted**. Average precision and trapezoidal PR-AUC are distinguished in the training report. False alerts/day remain unmeasured. Step 6 adds local HTTP throughput and p95 measurement; its smoke-test results use a separate synthetic model fixture and do not represent this public-data model.
+Both learned models missed the 1% test FPR target and are **not promoted**. Average precision and trapezoidal PR-AUC are distinguished in the training report. False alerts/day remain unmeasured without complete-day exposure. The [Step 10 public-data demo](docs/steps/10-demonstration/measured-example.json) replayed 2,175 test events without failures. Individual HTTP p95 was 32.27ms and throughput 56.60 requests/sec on an i5-1235U Windows laptop; batch replay throughput was 1,953.68 events/sec. These single-run simulated measurements are not a production SLA.
 
 This short capture shares hosts across periods and excludes unknown labels, creating unusually high suspicious prevalence. Its test period was already inspected and is a development holdout. Reserve a new independent capture for final evaluation; these scores do not establish operational effectiveness.
 
@@ -59,8 +62,12 @@ This short capture shares hosts across periods and excludes unknown labels, crea
 | 05 | Complete | SQLite experiment ledger, verified snapshots and model versions |
 | 06 | Complete | Pinned-version FastAPI inference, strict validation and HTTP benchmarks |
 | 07 | Complete | Local analyst dashboard, exact TreeSHAP and append-only reviews |
-| 08 | Planned | Simulated replay, traffic changes and monitoring |
-| 09 | Planned | Deployment checks, promotion rejection and rollback |
-| 10 | Planned | End-to-end demonstration and independent evaluation |
+| 08 | Complete | Simulated replay, traffic changes and monitoring |
+| 09 | Complete | Container checks, promotion rejection and simulation rollback |
+| 10 | Demo complete; independent evaluation pending | Measured report bundle and independent evaluation protocol |
 
-Use local open-source tools as the free fallback. Later milestones can add self-hosted MLflow, FastAPI, PostgreSQL, Docker and CI without provisioning paid resources. Every completed step receives its own README and verification evidence.
+Use local open-source tools as the free fallback. FastAPI, SQLite, Docker packaging and GitHub CI are implemented. MLflow/PostgreSQL are optional future integrations; no paid resource is provisioned. Every completed step receives its own README and verification evidence.
+
+## Final verification
+
+[CI verification](https://github.com/Raimal-Raja/network-threat-detection-platform/actions/runs/37520693707): 83 unit/API tests plus browser, operations and container persistence smoke checks passed. No model retraining is needed to use the new steps. Start the service using Step 7, then use Step 10 to generate your own report bundle.

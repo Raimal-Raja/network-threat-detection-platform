@@ -1,0 +1,71 @@
+{
+  "attempted_events": 2175,
+  "batch_size": 32,
+  "bundle_sha256": "c771366e25de10a56865ff45f43fcbc53729c7aa42995c237a61e2c825531b39",
+  "concurrency": 1,
+  "created_at_utc": "2026-10-06T19:28:40.819611+00:00",
+  "detection": {
+    "daily_observed_counts": {
+      "2011-08-18": {
+        "benign": 382,
+        "events": 2175,
+        "false_alerts": 24
+      }
+    },
+    "false_alerts_per_day": null,
+    "false_alerts_per_day_reason": "Selected events do not establish complete continuous-day coverage; no extrapolation.",
+    "first_completion_utc": "2011-08-18T13:54:52.305255+00:00",
+    "last_completion_utc": "2011-08-18T13:55:45.074915+00:00",
+    "metrics": {
+      "average_precision": 0.9999907457220558,
+      "benign_count": 382,
+      "false_alert_count": 24,
+      "false_positive_rate": 0.06282722513089005,
+      "pr_auc_trapezoidal": 0.99999289270768,
+      "recall": 1.0,
+      "suspicious_count": 1793,
+      "threshold": 0.018279122188687328
+    }
+  },
+  "drift": {
+    "current_rows": 2175,
+    "investigate": false,
+    "numeric": {
+      "bytes": {
+        "ks_distance": 0.17282189811119275,
+        "p_value": 5.001483485451552e-43
+      },
+      "duration_us": {
+        "ks_distance": 0.13835774738722928,
+        "p_value": 1.1202187837245962e-27
+      },
+      "packets": {
+        "ks_distance": 0.039132759237428656,
+        "p_value": 0.01307085083384282
+      }
+    },
+    "policy": "KS distance or protocol TV >= 0.2 is an illustrative heuristic, not a calibrated significance test.",
+    "protocol_total_variation": 0.05289992440541956,
+    "reference_rows": 6523
+  },
+  "duration_seconds": 1.1132828999543563,
+  "errors": [],
+  "evaluation_scope": "development_within_capture",
+  "events_per_second": 1953.6813150450557,
+  "events_sha256": "e3f8f97500ec8024405c1af3ac2cfeb031d07561ccced3fb64cf392f5e35f2ad",
+  "invalid_input_probe": {
+    "actual_status": 422,
+    "expected_status": 422,
+    "passed": true
+  },
+  "limitations": "Accelerated selected test-slice replay; no real-time pacing, complete-day coverage or independent evaluation. Shifted labels are not assumed valid; detection metrics suppressed after perturbation or any failure.",
+  "model_version": 1,
+  "p95_successful_batch_latency_ms": 35.72910011280328,
+  "production_ready": false,
+  "replay_order_sha256": "9e963b64738127e582f59f0c825b3f9f721b41778ec70d6fe6ff2b116f80548d",
+  "report_version": 1,
+  "shift_multiplier": 1,
+  "simulated": true,
+  "successful_events": 2175,
+  "threshold": 0.018279122188687328
+}

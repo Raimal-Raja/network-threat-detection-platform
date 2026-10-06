@@ -1,7 +1,7 @@
 name: Research platform checks
 on:
   push:
-    branches: [main, step-07-analyst]
+    branches: [main, finish-platform]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -9,7 +9,7 @@ permissions:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -27,11 +27,21 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Exercise analyst workflow in Chromium
         run: python tests/browser_smoke.py
-      - name: Preserve browser proof
+      - name: Exercise replay, monitoring and rollback
+        run: python tests/operations_smoke.py
+      - name: Validate Compose and build container
+        env:
+          THREAT_MODEL_VERSION: "1"
+        run: |
+          docker compose config --quiet
+          docker build -t threat-platform:ci .
+      - name: Exercise container persistence
+        run: python tests/docker_smoke.py
+      - name: Preserve browser and operations proof
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: analyst-browser-proof
+          name: platform-verification
           path: artifacts/verification/
           retention-days: 7
           if-no-files-found: warn

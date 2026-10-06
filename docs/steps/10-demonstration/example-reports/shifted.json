@@ -1,0 +1,45 @@
+{
+  "attempted_events": 2175,
+  "batch_size": 32,
+  "bundle_sha256": "c771366e25de10a56865ff45f43fcbc53729c7aa42995c237a61e2c825531b39",
+  "concurrency": 1,
+  "created_at_utc": "2026-10-06T19:28:43.586246+00:00",
+  "detection": null,
+  "drift": {
+    "current_rows": 2175,
+    "investigate": true,
+    "numeric": {
+      "bytes": {
+        "ks_distance": 0.8163798125465859,
+        "p_value": 0.0
+      },
+      "duration_us": {
+        "ks_distance": 0.13835774738722928,
+        "p_value": 1.1202187837245962e-27
+      },
+      "packets": {
+        "ks_distance": 0.9489498696918596,
+        "p_value": 0.0
+      }
+    },
+    "policy": "KS distance or protocol TV >= 0.2 is an illustrative heuristic, not a calibrated significance test.",
+    "protocol_total_variation": 0.05289992440541956,
+    "reference_rows": 6523
+  },
+  "duration_seconds": 1.3346341999713331,
+  "errors": [],
+  "evaluation_scope": "development_within_capture",
+  "events_per_second": 1629.660022234345,
+  "events_sha256": "e3f8f97500ec8024405c1af3ac2cfeb031d07561ccced3fb64cf392f5e35f2ad",
+  "invalid_input_probe": null,
+  "limitations": "Accelerated selected test-slice replay; no real-time pacing, complete-day coverage or independent evaluation. Shifted labels are not assumed valid; detection metrics suppressed after perturbation or any failure.",
+  "model_version": 1,
+  "p95_successful_batch_latency_ms": 35.69279995281249,
+  "production_ready": false,
+  "replay_order_sha256": "9e963b64738127e582f59f0c825b3f9f721b41778ec70d6fe6ff2b116f80548d",
+  "report_version": 1,
+  "shift_multiplier": 10,
+  "simulated": true,
+  "successful_events": 2175,
+  "threshold": 0.018279122188687328
+}

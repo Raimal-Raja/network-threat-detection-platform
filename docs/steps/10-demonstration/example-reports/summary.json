@@ -1,0 +1,11 @@
+{
+  "analyst_review": "original_prediction_preserved",
+  "bundle_sha256": "c771366e25de10a56865ff45f43fcbc53729c7aa42995c237a61e2c825531b39",
+  "case_id": "35f709f6385e428d8d4a0a1e5982117a",
+  "false_alerts_per_day": null,
+  "independent_evaluation": "not_available_requires_new_untouched_capture",
+  "model_version": 1,
+  "production_ready": false,
+  "promotion": "reject_production_promotion",
+  "simulated": true
+}

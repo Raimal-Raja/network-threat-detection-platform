@@ -19,6 +19,7 @@ from .tracking import show
 from .schemas import Flow, Batch, MAX_BATCH
 from .cases import CaseStore
 from .analyst import add_routes
+from .monitoring import Monitor, Telemetry
 
 MAX_BODY_BYTES = 65536
 logger = logging.getLogger(__name__)
@@ -131,7 +132,15 @@ def create_app(store=None, version=None, case_db=None):
         app.state.failure = "model_not_loaded"
         try:
             selected_store = Path(store or os.environ.get("THREAT_MODEL_STORE", "artifacts/tracking"))
-            selected_version = version if version is not None else int(os.environ["THREAT_MODEL_VERSION"])
+            if version is not None:
+                selected_version = version
+            elif "THREAT_MODEL_VERSION" in os.environ:
+                selected_version = int(os.environ["THREAT_MODEL_VERSION"])
+            else:
+                from .deployment import selected_version as deployed_version
+                selected_version = deployed_version(
+                    os.environ.get("THREAT_DEPLOYMENT_DB", "artifacts/deployment/state.sqlite3"),
+                    selected_store)
             if type(selected_version) is not int or selected_version < 1:
                 raise ValueError("positive model version required")
             app.state.predictor = Predictor(selected_store, selected_version)
@@ -143,8 +152,10 @@ def create_app(store=None, version=None, case_db=None):
         yield
         app.state.predictor = None
 
-    app = FastAPI(title="SIMULATED network threat inference", version="0.7.0", lifespan=lifespan)
+    app = FastAPI(title="SIMULATED network threat inference", version="0.10.0", lifespan=lifespan)
     app.add_middleware(BodyLimit)
+    monitor = Monitor()
+    app.add_middleware(Telemetry, monitor=monitor)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(request, exc):
@@ -176,6 +187,10 @@ def create_app(store=None, version=None, case_db=None):
     def ready():
         predictor = loaded()
         return {"status": "ready", **predictor.identity()}
+
+    @app.get("/monitor")
+    def monitor_info():
+        return monitor.snapshot()
 
     @app.get("/model")
     def model_info():

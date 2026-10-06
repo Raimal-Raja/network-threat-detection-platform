@@ -1,0 +1,19 @@
+services:
+  analyst:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      THREAT_MODEL_STORE: /models
+      THREAT_MODEL_VERSION: "${THREAT_MODEL_VERSION:?Set your registered model version}"
+      THREAT_CASE_DB: /app/artifacts/analyst/cases.sqlite3
+    volumes:
+      - ./artifacts/container-models:/models:ro
+      - analyst-cases:/app/artifacts/analyst
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+volumes:
+  analyst-cases:
