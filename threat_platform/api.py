@@ -7,34 +7,21 @@ import os
 import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated, Literal
 
 import numpy as np
 import xgboost as xgb
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel, ConfigDict, Field
 
 from .features import FEATURE_NAMES, FEATURE_VERSION, encode
 from .tracking import show
+from .schemas import Flow, Batch, MAX_BATCH
+from .cases import CaseStore
+from .analyst import add_routes
 
 MAX_BODY_BYTES = 65536
-MAX_BATCH = 256
 logger = logging.getLogger(__name__)
-
-
-class Flow(BaseModel):
-    model_config = ConfigDict(strict=True, extra="forbid")
-    duration_us: Annotated[int, Field(ge=0, le=86_400_000_000)]
-    packets: Annotated[int, Field(ge=0, le=2**63 - 1)]
-    bytes: Annotated[int, Field(ge=0, le=2**63 - 1)]
-    protocol: Literal["TCP", "UDP", "ICMP"]
-
-
-class Batch(BaseModel):
-    model_config = ConfigDict(strict=True, extra="forbid")
-    events: Annotated[list[Flow], Field(min_length=1, max_length=MAX_BATCH)]
 
 
 class BodyLimit:
@@ -43,7 +30,7 @@ class BodyLimit:
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        if scope["type"] != "http" or scope["path"] not in ("/predict", "/predict/batch"):
+        if scope["type"] != "http" or not (scope["path"] in ("/predict", "/predict/batch") or (scope["method"] == "POST" and scope["path"].startswith("/cases"))):
             return await self.app(scope, receive, send)
         chunks, size = [], 0
         while True:
@@ -53,7 +40,7 @@ class BodyLimit:
             data = message.get("body", b"")
             size += len(data)
             if size > MAX_BODY_BYTES:
-                response = JSONResponse({"detail": "prediction body exceeds 65536 bytes"}, status_code=413)
+                response = JSONResponse({"detail": "request body exceeds 65536 bytes"}, status_code=413)
                 return await response(scope, receive, send)
             chunks.append(data)
             if not message.get("more_body", False):
@@ -112,10 +99,35 @@ class Predictor:
                 for score in scores]
 
 
-def create_app(store=None, version=None):
+    def explain(self, row):
+        matrix = encode([row])
+        data = xgb.DMatrix(matrix, nthread=2)
+        with self.lock:
+            booster = self.model.get_booster()
+            values = booster.predict(data, pred_contribs=True, approx_contribs=False)[0].astype(np.float64)
+            margin = float(booster.predict(data, output_margin=True)[0])
+        if values.shape != (len(FEATURE_NAMES) + 1,) or not np.isfinite(values).all() or not math.isfinite(margin):
+            raise RuntimeError("invalid explanation")
+        if not math.isclose(float(values.sum()), margin, rel_tol=1e-5, abs_tol=5e-5):
+            raise RuntimeError("explanation additivity failed")
+        score = 1 / (1 + math.exp(-margin)) if margin >= 0 else math.exp(margin) / (1 + math.exp(margin))
+        return {"method": "exact_tree_shap", "space": "log_odds",
+                "bias": float(values[-1]), "raw_margin": margin, "reconstructed_score": score,
+                "additivity_verified": True,
+                "contributions": [{"feature": name, "value": float(matrix[0, i]),
+                                   "contribution": float(values[i])} for i, name in enumerate(FEATURE_NAMES)],
+                "limitation": "Model associations, not causal evidence or proof of malicious activity."}
+
+
+def create_app(store=None, version=None, case_db=None):
     @asynccontextmanager
     async def lifespan(app):
         app.state.predictor = None
+        app.state.cases = None
+        try:
+            app.state.cases = CaseStore(case_db or os.environ.get("THREAT_CASE_DB", "artifacts/analyst/cases.sqlite3"))
+        except Exception:
+            logger.exception("Case storage startup failed")
         app.state.failure = "model_not_loaded"
         try:
             selected_store = Path(store or os.environ.get("THREAT_MODEL_STORE", "artifacts/tracking"))
@@ -131,7 +143,7 @@ def create_app(store=None, version=None):
         yield
         app.state.predictor = None
 
-    app = FastAPI(title="SIMULATED network threat inference", version="0.6.0", lifespan=lifespan)
+    app = FastAPI(title="SIMULATED network threat inference", version="0.7.0", lifespan=lifespan)
     app.add_middleware(BodyLimit)
 
     @app.exception_handler(RequestValidationError)
@@ -182,6 +194,22 @@ def create_app(store=None, version=None):
     def predict_batch(batch: Batch):
         return {"predictions": infer([flow.model_dump() for flow in batch.events]),
                 "count": len(batch.events), "simulated": True, "production_ready": False}
+
+    def assess(flow):
+        predictor = loaded()
+        try:
+            prediction = predictor.predict([flow])[0]
+            explanation = predictor.explain(flow)
+            if not math.isclose(prediction["suspicious_score"], explanation["reconstructed_score"], abs_tol=1e-6):
+                raise RuntimeError("explanation score mismatch")
+            return prediction, explanation
+        except Exception:
+            logger.exception("Case assessment failed")
+            app.state.predictor = None
+            app.state.failure = "assessment_failed"
+            raise HTTPException(status_code=503, detail="research assessment failed")
+
+    add_routes(app, assess)
 
     return app
 
