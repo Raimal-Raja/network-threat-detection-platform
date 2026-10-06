@@ -1,0 +1,8 @@
+*
+!Dockerfile
+!requirements-training.txt
+!requirements-service.txt
+!threat_platform/
+!threat_platform/**
+**/__pycache__/
+**/*.pyc
