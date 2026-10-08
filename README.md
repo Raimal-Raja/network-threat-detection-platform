@@ -71,3 +71,52 @@ Use local open-source tools as the free fallback. FastAPI, SQLite, Docker packag
 ## Final verification
 
 [CI verification](https://github.com/Raimal-Raja/network-threat-detection-platform/actions/runs/37520693707): 83 unit/API tests plus browser, operations and container persistence smoke checks passed. No model retraining is needed to use the new steps. Start the service using Step 7, then use Step 10 to generate your own report bundle.
+
+---
+
+## Repository guide
+
+### Contents
+
+- [DATA_SOURCES.md](DATA_SOURCES.md)
+- [Dockerfile](Dockerfile)
+- [README.md](README.md)
+- [compose.yaml](compose.yaml)
+- [docs](docs)
+- [notebooks](notebooks)
+- [requirements-service.txt](requirements-service.txt)
+- [requirements-training.txt](requirements-training.txt)
+- [tests](tests)
+- [threat_platform](threat_platform)
+
+### Getting started
+
+```bash
+git clone https://github.com/Raimal-Raja/network-threat-detection-platform.git
+cd network-threat-detection-platform
+```
+
+Create and activate a virtual environment, then install the project dependencies:
+
+```bash
+python -m venv .venv
+# Linux/macOS: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r "requirements-training.txt"
+```
+
+Open the relevant .ipynb notebook in Jupyter or a compatible notebook environment. Inspect its dependency and data-loading cells before running; there is no single shared application entry point.
+
+### Configuration and limitations
+
+### Validation
+
+Reviewed on 2026-10-08. Existing suite: 83 tests and 56 subtests passed. Live captures, cloud deployment, and operational approval were not evaluated.
+
+### Contributions
+
+Describe the issue, reproduction steps, environment, and expected behavior when proposing a change. Keep generated environments, credentials, and unnecessary build artifacts out of new commits.
+
+### License
+
+No top-level license file was found during this review.
