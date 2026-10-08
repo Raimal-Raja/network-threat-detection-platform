@@ -74,13 +74,12 @@ Use local open-source tools as the free fallback. FastAPI, SQLite, Docker packag
 
 ---
 
-## Repository guide
+## Setup and repository reference
 
-### Contents
+### Project structure
 
 - [DATA_SOURCES.md](DATA_SOURCES.md)
 - [Dockerfile](Dockerfile)
-- [README.md](README.md)
 - [compose.yaml](compose.yaml)
 - [docs](docs)
 - [notebooks](notebooks)
@@ -109,9 +108,19 @@ Open the relevant .ipynb notebook in Jupyter or a compatible notebook environmen
 
 ### Configuration and limitations
 
+Use the dependency manifests and workflow commands in the project sections above. Model/API tests use simulated fixtures; passing them does not establish production threat-detection accuracy or operational deployment readiness.
+
 ### Validation
 
-Reviewed on 2026-10-08. Existing suite: 83 tests and 56 subtests passed. Live captures, cloud deployment, and operational approval were not evaluated.
+Audit: 2026-10-08. Repository structure, setup instructions and description were reviewed. 29 existing Python files passed syntax checks; changed files and new regression tests were checked separately. 1 JavaScript files passed node --check; JSX/TypeScript production builds were not run. 83 regression tests passed. Syntax checks do not establish full runtime correctness. External APIs, live scraping, GUI interaction, notebook training and production deployment were not comprehensively exercised.
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+### Repository description
+
+The short GitHub description is provided in [REPOSITORY_DESCRIPTION.md](REPOSITORY_DESCRIPTION.md).
 
 ### Contributions
 
