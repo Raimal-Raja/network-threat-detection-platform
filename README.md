@@ -104,7 +104,7 @@ python -m venv .venv
 python -m pip install -r "requirements-training.txt"
 ```
 
-Open the relevant .ipynb notebook in Jupyter or a compatible notebook environment. Inspect its dependency and data-loading cells before running; there is no single shared application entry point.
+Run the local CLI with `python -m threat_platform --help`. Follow the numbered learning guides above for ingestion, training, API serving, and the analyst interface. The Colab notebook is an optional training path.
 
 ### Configuration and limitations
 
@@ -112,15 +112,11 @@ Use the dependency manifests and workflow commands in the project sections above
 
 ### Validation
 
-Audit: 2026-10-08. Repository structure, setup instructions and description were reviewed. 29 existing Python files passed syntax checks; changed files and new regression tests were checked separately. 1 JavaScript files passed node --check; JSX/TypeScript production builds were not run. 83 regression tests passed. Syntax checks do not establish full runtime correctness. External APIs, live scraping, GUI interaction, notebook training and production deployment were not comprehensively exercised.
+Recorded checks from the previous maintenance review (2026-10-08): 29 existing Python files passed syntax checks; changed files and new regression tests were checked separately. 1 JavaScript files passed node --check; JSX/TypeScript production builds were not run. 83 regression tests passed. Syntax checks do not establish full runtime correctness. External APIs, live scraping, GUI interaction, notebook training and production deployment were not comprehensively exercised.
 
 ```bash
 python -m unittest discover -s tests -v
 ```
-
-### Repository description
-
-The short GitHub description is provided in [REPOSITORY_DESCRIPTION.md](REPOSITORY_DESCRIPTION.md).
 
 ### Contributions
 
